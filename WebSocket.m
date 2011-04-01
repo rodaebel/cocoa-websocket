@@ -18,6 +18,20 @@ enum {
     WebSocketTagMessage = 1
 };
 
+long MAX_INT = 4294967295;
+
+#define HANDSHAKE_REQUEST \
+@"GET %@ HTTP/1.1\r\n" \
+"Upgrade: WebSocket\r\n" \
+"Connection: Upgrade\r\n" \
+"Sec-WebSocket-Protocol: sample\r\n" \
+"Sec-WebSocket-Key1: %@\r\n" \
+"Sec-WebSocket-Key2: %@\r\n" \
+"Host: %@\r\n" \
+"Origin: %@\r\n" \
+"\r\n" \
+"%@"
+
 @implementation WebSocket
 
 @synthesize delegate, url, origin, connected, runLoopModes;
@@ -80,6 +94,33 @@ enum {
     [socket readDataToData:[NSData dataWithBytes:"\xFF" length:1] withTimeout:-1 tag:WebSocketTagMessage];
 }
 
+-(NSString *)_makeKey {
+    int i, spaces;
+    long num, prod;
+    unichar letter;
+
+    spaces = (arc4random() % 12) + 1;
+    num = arc4random() % (MAX_INT/spaces);
+    prod = spaces * num;
+
+    NSMutableString *key = [NSMutableString stringWithFormat:@"%ld", prod];
+
+    for (i=0; i<12; i++) {
+
+        if ((arc4random() % 2) == 0)
+            letter = (arc4random() % (64 - 33 + 1)) + 33;
+        else
+            letter = (arc4random() % (126 - 58 + 1)) + 58;
+
+        [key insertString:[[[NSString alloc] initWithCharacters:&letter length:1] autorelease] atIndex:(arc4random() % 11)];
+    }
+
+    for (i=0; i<spaces; i++)
+        [key insertString:@" " atIndex:((arc4random() % 22)+1)];
+
+    return key;
+}
+
 #pragma mark Public interface
 
 -(void)close {
@@ -123,19 +164,30 @@ enum {
     if (url.query) {
       requestPath = [requestPath stringByAppendingFormat:@"?%@", url.query];
     }
-    NSString* getRequest = [NSString stringWithFormat:@"GET %@ HTTP/1.1\r\n"
-                                                       "Upgrade: WebSocket\r\n"
-                                                       "Connection: Upgrade\r\n"
-                                                       "Host: %@\r\n"
-                                                       "Origin: %@\r\n"
-                                                       "\r\n",
-                                                        requestPath,url.host,requestOrigin];
-    [socket writeData:[getRequest dataUsingEncoding:NSASCIIStringEncoding] withTimeout:-1 tag:WebSocketTagHandshake];
+
+    NSString *key1 = [self _makeKey];
+    NSString *key2 = [self _makeKey];
+    NSMutableString *key3 = [NSMutableString string];
+
+    for (int i=0; i<8; i++) {
+        unichar letter = arc4random() % 126;
+        [key3 appendString:[[[NSString alloc] initWithCharacters:&letter length:1] autorelease]];
+    }
+
+    NSString *request = [NSString stringWithFormat:HANDSHAKE_REQUEST,
+                                                   requestPath,
+                                                   key1,
+                                                   key2,
+                                                   url.host,
+                                                   requestOrigin,
+                                                   key3];
+
+    [socket writeData:[request dataUsingEncoding:NSASCIIStringEncoding] withTimeout:-1 tag:WebSocketTagHandshake];
 }
 
 -(void)onSocket:(AsyncSocket *)sock didWriteDataWithTag:(long)tag {
     if (tag == WebSocketTagHandshake) {
-        [sock readDataToData:[@"\r\n\r\n" dataUsingEncoding:NSASCIIStringEncoding] withTimeout:-1 tag:WebSocketTagHandshake];
+        [sock readDataWithTimeout:-1 tag:WebSocketTagHandshake];
     } else if (tag == WebSocketTagMessage) {
         [self _dispatchMessageSent];
     }
@@ -144,10 +196,13 @@ enum {
 -(void)onSocket:(AsyncSocket *)sock didReadData:(NSData *)data withTag:(long)tag {
     if (tag == WebSocketTagHandshake) {
         NSString* response = [[[NSString alloc] initWithData:data encoding:NSASCIIStringEncoding] autorelease];
-        if ([response hasPrefix:@"HTTP/1.1 101 Web Socket Protocol Handshake\r\nUpgrade: WebSocket\r\nConnection: Upgrade\r\n"]) {
+        // TODO: Better way for matching WebSocket Protocol Handshake response
+        if ([response hasPrefix:@"HTTP/1.1 101 WebSocket Protocol Handshake\r\nUpgrade: WebSocket\r\nConnection: Upgrade\r\n"]) {
+            // TODO: Verify key
+            //NSRange r = [response rangeOfString:@"\r\n\r\n"];
+            //NSString *key = [response substringFromIndex:r.location+r.length];
             connected = YES;
             [self _dispatchOpened];
-            
             [self _readNextMessage];
         } else {
             [self _dispatchFailure:[NSNumber numberWithInt:WebSocketErrorHandshakeFailed]];
