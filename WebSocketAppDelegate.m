@@ -13,8 +13,8 @@
 @synthesize window;
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
-    webSocket = [[WebSocket alloc] initWithURLString:@"ws://localhost:8003/memstore" delegate:self];
-    [webSocket open];	
+    webSocket = [[WebSocket alloc] initWithURLString:@"ws://localhost:8888/ZGVtbw==/foo/bar" delegate:self];
+    [webSocket open];
 }
 
 -(void)webSocketDidClose:(WebSocket *)ws {
@@ -32,7 +32,7 @@
 }
 
 -(void)webSocket:(WebSocket *)ws didReceiveMessage:(NSString*)message {
-    NSLog(@"Recieved message: %@", message);
+    NSLog(@"Received: %@", message);
 }
 
 -(void)webSocketDidOpen:(WebSocket *)ws {
