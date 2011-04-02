@@ -18,8 +18,6 @@ enum {
     WebSocketTagMessage = 1
 };
 
-long MAX_INT = 4294967295;
-
 #define HANDSHAKE_REQUEST \
 @"GET %@ HTTP/1.1\r\n" \
 "Upgrade: WebSocket\r\n" \
@@ -100,7 +98,7 @@ long MAX_INT = 4294967295;
     unichar letter;
 
     spaces = (arc4random() % 12) + 1;
-    num = arc4random() % (MAX_INT/spaces);
+    num = arc4random() % (INT_MAX/spaces);
     prod = spaces * num;
 
     NSMutableString *key = [NSMutableString stringWithFormat:@"%ld", prod];
