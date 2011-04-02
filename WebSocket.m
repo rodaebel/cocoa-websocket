@@ -92,20 +92,20 @@ enum {
 }
 
 -(NSString *)_makeKey {
-    int i, spaces;
-    long num, prod;
+    uint32_t spaces;
+    uint32_t num, prod;
     NSInteger keylen;
     unichar letter;
 
     spaces = (arc4random() % 12) + 1;
-    num = arc4random() % (INT_MAX/spaces);
+    num = arc4random() % (4294967295U / spaces);
     prod = spaces * num;
 
     NSMutableString *key = [NSMutableString stringWithFormat:@"%ld", prod];
 
     keylen = [key length];
 
-    for (i=0; i<keylen; i++) {
+    for (NSInteger i=0; i<keylen; i++) {
 
         if ((arc4random() % 2) == 0)
             letter = (arc4random() % (64 - 33 + 1)) + 33;
@@ -117,7 +117,7 @@ enum {
 
     keylen = [key length];
 
-    for (i=0; i<spaces; i++)
+    for (uint32_t i=0; i<spaces; i++)
         [key insertString:@" " atIndex:((arc4random() % (keylen-2))+1)];
 
     return key;
