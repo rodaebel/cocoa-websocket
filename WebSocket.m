@@ -49,7 +49,7 @@ enum {
             [NSException raise:WebSocketException format:@"Unsupported protocol %@", url.scheme];
         }
         socket = [[AsyncSocket alloc] initWithDelegate:self];
-        self.runLoopModes = [NSArray arrayWithObjects:NSRunLoopCommonModes, nil]; 
+        self.runLoopModes = [NSArray arrayWithObjects:NSRunLoopCommonModes, nil];
     }
     return self;
 }
@@ -95,6 +95,7 @@ enum {
 -(NSString *)_makeKey {
     int i, spaces;
     long num, prod;
+    NSInteger keylen;
     unichar letter;
 
     spaces = (arc4random() % 12) + 1;
@@ -103,18 +104,22 @@ enum {
 
     NSMutableString *key = [NSMutableString stringWithFormat:@"%ld", prod];
 
-    for (i=0; i<12; i++) {
+    keylen = [key length];
+
+    for (i=0; i<keylen; i++) {
 
         if ((arc4random() % 2) == 0)
             letter = (arc4random() % (64 - 33 + 1)) + 33;
         else
             letter = (arc4random() % (126 - 58 + 1)) + 58;
 
-        [key insertString:[[[NSString alloc] initWithCharacters:&letter length:1] autorelease] atIndex:(arc4random() % 11)];
+        [key insertString:[[[NSString alloc] initWithCharacters:&letter length:1] autorelease] atIndex:(arc4random() % (keylen-1))];
     }
 
+    keylen = [key length];
+
     for (i=0; i<spaces; i++)
-        [key insertString:@" " atIndex:((arc4random() % 22)+1)];
+        [key insertString:@" " atIndex:((arc4random() % (keylen-2))+1)];
 
     return key;
 }
@@ -155,13 +160,10 @@ enum {
 }
 
 - (void)onSocket:(AsyncSocket *)sock didConnectToHost:(NSString *)host port:(UInt16)port {
-    NSString* requestOrigin = self.origin;
-    if (!requestOrigin) requestOrigin = [NSString stringWithFormat:@"http://%@",url.host];
-        
-    NSString *requestPath = url.path;
-    if (url.query) {
-      requestPath = [requestPath stringByAppendingFormat:@"?%@", url.query];
-    }
+
+    NSString *requestOrigin = (self.origin) ? self.origin : [NSString stringWithFormat:@"http://%@", url.host];
+
+    NSString *requestPath = (url.query) ? [NSString stringWithFormat:@"%@?%@", url.path, url.query] : url.path;
 
     NSString *key1 = [self _makeKey];
     NSString *key2 = [self _makeKey];
@@ -193,9 +195,9 @@ enum {
 
 -(void)onSocket:(AsyncSocket *)sock didReadData:(NSData *)data withTag:(long)tag {
     if (tag == WebSocketTagHandshake) {
-        NSString* response = [[[NSString alloc] initWithData:data encoding:NSASCIIStringEncoding] autorelease];
+        NSString *response = [[[NSString alloc] initWithData:data encoding:NSASCIIStringEncoding] autorelease];
         // TODO: Better way for matching WebSocket Protocol Handshake response
-        if ([response hasPrefix:@"HTTP/1.1 101 WebSocket Protocol Handshake\r\nUpgrade: WebSocket\r\nConnection: Upgrade\r\n"]) {
+        if ([response hasPrefix:@"HTTP/1.1 101 Web Socket Protocol Handshake\r\nUpgrade: WebSocket\r\nConnection: Upgrade\r\n"]) {
             // TODO: Verify key
             //NSRange r = [response rangeOfString:@"\r\n\r\n"];
             //NSString *key = [response substringFromIndex:r.location+r.length];
@@ -209,8 +211,8 @@ enum {
         char firstByte = 0xFF;
         [data getBytes:&firstByte length:1];
         if (firstByte != 0x00) return; // Discard message
-        NSString* message = [[[NSString alloc] initWithData:[data subdataWithRange:NSMakeRange(1, [data length]-2)] encoding:NSUTF8StringEncoding] autorelease];
-    
+        NSString *message = [[[NSString alloc] initWithData:[data subdataWithRange:NSMakeRange(1, [data length]-2)] encoding:NSUTF8StringEncoding] autorelease];
+
         [self _dispatchMessageReceived:message];
         [self _readNextMessage];
     }
@@ -228,4 +230,3 @@ enum {
 }
 
 @end
-
