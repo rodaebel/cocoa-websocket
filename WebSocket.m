@@ -18,17 +18,16 @@ enum {
     WebSocketTagMessage = 1
 };
 
-#define HANDSHAKE_REQUEST \
-@"GET %@ HTTP/1.1\r\n" \
-"Upgrade: WebSocket\r\n" \
-"Connection: Upgrade\r\n" \
-"Sec-WebSocket-Protocol: sample\r\n" \
-"Sec-WebSocket-Key1: %@\r\n" \
-"Sec-WebSocket-Key2: %@\r\n" \
-"Host: %@\r\n" \
-"Origin: %@\r\n" \
-"\r\n" \
-"%@"
+#define HANDSHAKE_REQUEST @"GET %@ HTTP/1.1\r\n" \
+                           "Upgrade: WebSocket\r\n" \
+                           "Connection: Upgrade\r\n" \
+                           "Sec-WebSocket-Protocol: sample\r\n" \
+                           "Sec-WebSocket-Key1: %@\r\n" \
+                           "Sec-WebSocket-Key2: %@\r\n" \
+                           "Host: %@\r\n" \
+                           "Origin: %@\r\n" \
+                           "\r\n%@"
+
 
 @implementation WebSocket
 
@@ -194,19 +193,38 @@ enum {
 }
 
 -(void)onSocket:(AsyncSocket *)sock didReadData:(NSData *)data withTag:(long)tag {
+
     if (tag == WebSocketTagHandshake) {
-        NSString *response = [[[NSString alloc] initWithData:data encoding:NSASCIIStringEncoding] autorelease];
-        // TODO: Better way for matching WebSocket Protocol Handshake response
-        if ([response hasPrefix:@"HTTP/1.1 101 Web Socket Protocol Handshake\r\nUpgrade: WebSocket\r\nConnection: Upgrade\r\n"]) {
-            // TODO: Verify key
-            //NSRange r = [response rangeOfString:@"\r\n\r\n"];
-            //NSString *key = [response substringFromIndex:r.location+r.length];
+
+        NSString *upgrade;
+        NSString *connection;
+        NSData *body;
+        UInt32 statusCode;
+
+        CFHTTPMessageRef message = CFHTTPMessageCreateEmpty(kCFAllocatorDefault, FALSE);
+
+        if (!CFHTTPMessageAppendBytes(message, [data bytes], [data length])) {
+            [self _dispatchFailure:[NSNumber numberWithInt:WebSocketErrorHandshakeFailed]];
+        }
+
+        if (CFHTTPMessageIsHeaderComplete(message)) {
+            upgrade = [(NSString *) CFHTTPMessageCopyHeaderFieldValue(message, CFSTR("Upgrade")) autorelease];
+            connection = [(NSString *) CFHTTPMessageCopyHeaderFieldValue(message, CFSTR("Connection")) autorelease];
+            statusCode = CFHTTPMessageGetResponseStatusCode(message);
+        }
+
+        if (statusCode == 101 && [upgrade isEqualToString:@"WebSocket"] && [connection isEqualToString:@"Upgrade"]) {
+
+            body = [(NSData *)CFHTTPMessageCopyBody(message) autorelease];
+
             connected = YES;
+
             [self _dispatchOpened];
             [self _readNextMessage];
         } else {
             [self _dispatchFailure:[NSNumber numberWithInt:WebSocketErrorHandshakeFailed]];
         }
+
     } else if (tag == WebSocketTagMessage) {
         char firstByte = 0xFF;
         [data getBytes:&firstByte length:1];
