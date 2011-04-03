@@ -1,9 +1,12 @@
 //
 //  WebSocket.h
-//  Zimt
 //
-//  Created by Esad Hajdarevic on 2/14/10.
+//  Originally created for Zimt by Esad Hajdarevic on 2/14/10.
 //  Copyright 2010 OpenResearch Software Development OG. All rights reserved.
+//
+//  Erich Ocean made the code more generic.
+//
+//  Tobias Rodäbel implemented support for draft-hixie-thewebsocketprotocol-76.
 //
 
 #import <Foundation/Foundation.h>
@@ -22,22 +25,24 @@
 
 @interface WebSocket : NSObject {
     id<WebSocketDelegate> delegate;
-    NSURL* url;
-    AsyncSocket* socket;
+    NSURL *url;
+    AsyncSocket *socket;
     BOOL connected;
-    NSString* origin;
+    NSString *origin;
+    NSData *expectedChallenge;
     
     NSArray* runLoopModes;
 }
 
 @property(nonatomic,assign) id<WebSocketDelegate> delegate;
-@property(nonatomic,readonly) NSURL* url;
-@property(nonatomic,retain) NSString* origin;
+@property(nonatomic,readonly) NSURL *url;
+@property(nonatomic,retain) NSString *origin;
 @property(nonatomic,readonly) BOOL connected;
-@property(nonatomic,retain) NSArray* runLoopModes;
+@property(nonatomic,retain) NSData *expectedChallenge;
+@property(nonatomic,retain) NSArray *runLoopModes;
 
-+ (id)webSocketWithURLString:(NSString*)urlString delegate:(id<WebSocketDelegate>)delegate;
-- (id)initWithURLString:(NSString*)urlString delegate:(id<WebSocketDelegate>)delegate;
++ (id)webSocketWithURLString:(NSString *)urlString delegate:(id<WebSocketDelegate>)delegate;
+- (id)initWithURLString:(NSString *)urlString delegate:(id<WebSocketDelegate>)delegate;
 
 - (void)open;
 - (void)close;
@@ -50,5 +55,5 @@ enum {
     WebSocketErrorHandshakeFailed = 2
 };
 
-extern NSString *const WebSocketException;
-extern NSString* const WebSocketErrorDomain;
+extern NSString * const WebSocketException;
+extern NSString * const WebSocketErrorDomain;
