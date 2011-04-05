@@ -46,7 +46,7 @@ typedef struct SecKey {
 
 @implementation NSData (md5)
 
-- (NSData *) MD5 
+- (NSData *) MD5
 {
     NSMutableData *digest = [NSMutableData dataWithLength:CC_MD5_DIGEST_LENGTH];
 
@@ -137,10 +137,10 @@ typedef struct SecKey {
 
     keylen = [key length];
 
-    for (NSInteger i=0; i<keylen; i++) {
+    for (NSInteger i=0; i<12; i++) {
 
         if ((arc4random() % 2) == 0)
-            letter = (arc4random() % (46 - 33 + 1)) + 33;
+            letter = (arc4random() % (47 - 33 + 1)) + 33;
         else
             letter = (arc4random() % (126 - 58 + 1)) + 58;
 
