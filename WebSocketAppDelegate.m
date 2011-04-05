@@ -13,7 +13,7 @@
 @synthesize window;
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
-    webSocket = [[WebSocket alloc] initWithURLString:@"ws://localhost:8888/ZGVtbw==/foo/bar" delegate:self];
+    webSocket = [[WebSocket alloc] initWithURLString:@"ws://localhost:8888/socket.io/websocket" delegate:self];
     [webSocket open];
 }
 
