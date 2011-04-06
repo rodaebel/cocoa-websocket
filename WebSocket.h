@@ -15,7 +15,7 @@
 @class WebSocket;
 
 @protocol WebSocketDelegate<NSObject>
-@optional 
+@optional
     - (void)webSocket:(WebSocket*)webSocket didFailWithError:(NSError*)error;
     - (void)webSocketDidOpen:(WebSocket*)webSocket;
     - (void)webSocketDidClose:(WebSocket*)webSocket;
@@ -30,7 +30,6 @@
     BOOL connected;
     NSString *origin;
     NSData *expectedChallenge;
-    
     NSArray* runLoopModes;
 }
 
