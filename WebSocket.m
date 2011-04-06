@@ -216,12 +216,12 @@ typedef struct SecKey {
     NSString *key1 = seckey1.key;
     NSString *key2 = seckey2.key;
 
-    NSMutableData *key3 = [NSMutableData dataWithLength:8];
+    char letters[8];
 
-    for (int i=0; i<8; i++) {
-        const unichar letter = arc4random() % 126;
-        [key3 appendData:[NSData dataWithBytes:&letter length:1]];
-    }
+    for (int i=0; i<8; i++)
+        letters[i] = arc4random() % 126;
+
+    NSData *key3 = [NSData dataWithBytes:letters length:8];
 
     unsigned char bytes[8];
     [self _makeChallengeNumber:seckey1.num withBuffer:&bytes[0]];
@@ -248,7 +248,7 @@ typedef struct SecKey {
 - (void)onSocket:(AsyncSocket *)sock didWriteDataWithTag:(long)tag {
     switch (tag) {
         case WebSocketTagHandshake:
-            [sock readDataToData:self.expectedChallenge withTimeout:-1 tag:WebSocketTagHandshake];
+            [sock readDataToData:self.expectedChallenge withTimeout:5 tag:WebSocketTagHandshake];
             break;
 
         case WebSocketTagMessage:
