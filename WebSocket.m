@@ -14,6 +14,8 @@
 
 #import <CommonCrypto/CommonDigest.h>
 
+#define WEBSOCKET_DEV_MODE 1
+
 NSString * const WebSocketErrorDomain = @"WebSocketErrorDomain";
 NSString * const WebSocketException   = @"WebSocketException";
 
@@ -33,7 +35,7 @@ typedef struct SecKey {
                            "Sec-WebSocket-Protocol: sample\r\n" \
                            "Sec-WebSocket-Key1: %@\r\n" \
                            "Sec-WebSocket-Key2: %@\r\n" \
-                           "Host: %@\r\n" \
+                           "Host: %@%@\r\n" \
                            "Origin: %@\r\n\r\n"
 
 
@@ -60,7 +62,7 @@ typedef struct SecKey {
 
 @implementation WebSocket
 
-@synthesize delegate, url, origin, connected, expectedChallenge, runLoopModes;
+@synthesize delegate, url, origin, connected, expectedChallenge, runLoopModes, secure;
 
 #pragma mark Initializers
 
@@ -73,8 +75,11 @@ typedef struct SecKey {
     if (self) {
         self.delegate = aDelegate;
         url = [[NSURL URLWithString:urlString] retain];
-        if (![url.scheme isEqualToString:@"ws"]) {
-            [NSException raise:WebSocketException format:@"Unsupported protocol %@", url.scheme];
+        if (![url.scheme isEqualToString:@"ws"] && ![url.scheme isEqualToString:@"wss"]) {
+          [NSException raise:WebSocketException format:@"Unsupported protocol %@", url.scheme];
+        }
+        if ([url.scheme isEqualToString:@"wss"]) {
+          secure = YES;
         }
         socket = [[AsyncSocket alloc] initWithDelegate:self];
         self.runLoopModes = [NSArray arrayWithObjects:NSRunLoopCommonModes, nil];
@@ -111,6 +116,12 @@ typedef struct SecKey {
 - (void)_dispatchMessageSent {
     if (delegate && [delegate respondsToSelector:@selector(webSocketDidSendMessage:)]) {
         [delegate webSocketDidSendMessage:self];
+    }
+}
+
+-(void)_dispatchSecured {
+    if (delegate && [delegate respondsToSelector:@selector(webSocketDidSecure:)]) {
+      [delegate webSocketDidSecure:self];
     }
 }
 
@@ -177,6 +188,15 @@ typedef struct SecKey {
 
 - (void)open {
     if (!connected) {
+        if (secure) {
+          NSDictionary *settings = nil;
+          if (WEBSOCKET_DEV_MODE) {
+            settings = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:YES], 
+                        (NSString *)kCFStreamSSLAllowsAnyRoot, nil];
+          }
+          [socket startTLS:settings];
+        }
+      
         [socket connectToHost:url.host onPort:[url.port intValue] withTimeout:5 error:nil];
         if (runLoopModes) [socket setRunLoopModes:runLoopModes];
     }
@@ -191,6 +211,32 @@ typedef struct SecKey {
 }
 
 #pragma mark AsyncSocket delegate methods
+
+- (BOOL)onSocketWillConnect:(AsyncSocket *)sock {
+  if (secure && WEBSOCKET_DEV_MODE) {
+    // Connecting to a secure server
+    NSMutableDictionary * settings = [NSMutableDictionary dictionaryWithCapacity:2];
+    
+    // Use the highest possible security
+    [settings setObject:(NSString *)kCFStreamSocketSecurityLevelNegotiatedSSL
+                 forKey:(NSString *)kCFStreamSSLLevel];
+    
+    // Allow self-signed certificates
+    [settings setObject:[NSNumber numberWithBool:YES]
+                 forKey:(NSString *)kCFStreamSSLAllowsAnyRoot];
+    
+    CFReadStreamSetProperty([sock getCFReadStream],
+                            kCFStreamPropertySSLSettings, (CFDictionaryRef)settings);
+    CFWriteStreamSetProperty([sock getCFWriteStream],
+                             kCFStreamPropertySSLSettings, (CFDictionaryRef)settings);
+  }
+  
+  return YES;
+}
+
+- (void)onSocketDidSecure:(AsyncSocket *)sock {
+  [self _dispatchSecured];
+}
 
 - (void)onSocketDidDisconnect:(AsyncSocket *)sock {
     connected = NO;
@@ -237,6 +283,9 @@ typedef struct SecKey {
                                                    key1,
                                                    key2,
                                                    url.host,
+                                                   ((secure && [url.port intValue] != 443) || 
+                                                    (!secure && [url.port intValue] != 80)) ? 
+                                                    [NSString stringWithFormat:@":%d", [url.port intValue]] : @"",
                                                    requestOrigin];
 
     NSMutableData *request = [NSMutableData dataWithData:[headers dataUsingEncoding:NSASCIIStringEncoding]];

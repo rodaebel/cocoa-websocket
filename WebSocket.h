@@ -21,6 +21,7 @@
     - (void)webSocketDidClose:(WebSocket*)webSocket;
     - (void)webSocket:(WebSocket*)webSocket didReceiveMessage:(NSString*)message;
     - (void)webSocketDidSendMessage:(WebSocket*)webSocket;
+    - (void)webSocketDidSecure:(WebSocket*)webSocket;
 @end
 
 @interface WebSocket : NSObject {
@@ -28,6 +29,7 @@
     NSURL *url;
     AsyncSocket *socket;
     BOOL connected;
+    BOOL secure;
     NSString *origin;
     NSData *expectedChallenge;
     NSArray* runLoopModes;
@@ -37,6 +39,7 @@
 @property(nonatomic,readonly) NSURL *url;
 @property(nonatomic,retain) NSString *origin;
 @property(nonatomic,readonly) BOOL connected;
+@property(nonatomic,readonly) BOOL secure;
 @property(nonatomic,retain) NSData *expectedChallenge;
 @property(nonatomic,retain) NSArray *runLoopModes;
 
