@@ -14,7 +14,8 @@
 
 #import <CommonCrypto/CommonDigest.h>
 
-#define WEBSOCKET_DEV_MODE 1
+// Set this to 1 if you are running in secure mode on a box without a valid cert
+#define WEBSOCKET_DEV_MODE 0
 
 NSString * const WebSocketErrorDomain = @"WebSocketErrorDomain";
 NSString * const WebSocketException   = @"WebSocketException";
