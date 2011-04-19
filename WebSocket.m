@@ -53,7 +53,7 @@ typedef struct SecKey {
 {
     NSMutableData *digest = [NSMutableData dataWithLength:CC_MD5_DIGEST_LENGTH];
 
-    CC_MD5([self bytes], [self length], [digest mutableBytes]);
+    CC_MD5([self bytes], (unsigned)[self length], [digest mutableBytes]);
 
     return digest;
 }
@@ -328,7 +328,7 @@ typedef struct SecKey {
         if (CFHTTPMessageIsHeaderComplete(message)) {
             upgrade = [(NSString *) CFHTTPMessageCopyHeaderFieldValue(message, CFSTR("Upgrade")) autorelease];
             connection = [(NSString *) CFHTTPMessageCopyHeaderFieldValue(message, CFSTR("Connection")) autorelease];
-            statusCode = CFHTTPMessageGetResponseStatusCode(message);
+            statusCode = (UInt32)CFHTTPMessageGetResponseStatusCode(message);
         }
 
         if (statusCode == 101 && [upgrade isEqualToString:@"WebSocket"] && [connection isEqualToString:@"Upgrade"]) {
