@@ -17,6 +17,12 @@
 		CC859C5511759B5E0006783F /* AsyncSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = CC859C5011759B5E0006783F /* AsyncSocket.m */; };
 		CC859C5611759B5E0006783F /* AsyncUdpSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = CC859C5211759B5E0006783F /* AsyncUdpSocket.m */; };
 		CC859C5711759B5E0006783F /* changes.txt in Resources */ = {isa = PBXBuildFile; fileRef = CC859C5311759B5E0006783F /* changes.txt */; };
+		F660E11B13AD4CCE00B5A873 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F660E11A13AD4CCE00B5A873 /* Cocoa.framework */; };
+		F660E12113AD4CCE00B5A873 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = F660E11F13AD4CCE00B5A873 /* InfoPlist.strings */; };
+		F660E12413AD4CCE00B5A873 /* WebSocketTests.h in Resources */ = {isa = PBXBuildFile; fileRef = F660E12313AD4CCE00B5A873 /* WebSocketTests.h */; };
+		F660E12613AD4CCE00B5A873 /* WebSocketTests.m in Sources */ = {isa = PBXBuildFile; fileRef = F660E12513AD4CCE00B5A873 /* WebSocketTests.m */; };
+		F660E12E13AD4ECD00B5A873 /* WebSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = CC859C4A11759B3B0006783F /* WebSocket.m */; };
+		F660E13013AD53A000B5A873 /* AsyncSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = CC859C5011759B5E0006783F /* AsyncSocket.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -40,6 +46,13 @@
 		CC859C5111759B5E0006783F /* AsyncUdpSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AsyncUdpSocket.h; sourceTree = "<group>"; };
 		CC859C5211759B5E0006783F /* AsyncUdpSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AsyncUdpSocket.m; sourceTree = "<group>"; };
 		CC859C5311759B5E0006783F /* changes.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = changes.txt; sourceTree = "<group>"; };
+		F660E11913AD4CCE00B5A873 /* WebSocketTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WebSocketTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
+		F660E11A13AD4CCE00B5A873 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
+		F660E11E13AD4CCE00B5A873 /* WebSocketTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "WebSocketTests-Info.plist"; sourceTree = "<group>"; };
+		F660E12013AD4CCE00B5A873 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		F660E12213AD4CCE00B5A873 /* WebSocketTests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "WebSocketTests-Prefix.pch"; sourceTree = "<group>"; };
+		F660E12313AD4CCE00B5A873 /* WebSocketTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WebSocketTests.h; sourceTree = "<group>"; };
+		F660E12513AD4CCE00B5A873 /* WebSocketTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WebSocketTests.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -48,6 +61,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F660E11513AD4CCE00B5A873 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F660E11B13AD4CCE00B5A873 /* Cocoa.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -88,6 +109,7 @@
 			isa = PBXGroup;
 			children = (
 				8D1107320486CEB800E47090 /* WebSocket.app */,
+				F660E11913AD4CCE00B5A873 /* WebSocketTests.octest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -98,6 +120,7 @@
 				080E96DDFE201D6D7F000001 /* Classes */,
 				29B97315FDCFA39411CA2CEA /* Other Sources */,
 				29B97317FDCFA39411CA2CEA /* Resources */,
+				F660E11C13AD4CCE00B5A873 /* WebSocketTests */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
 			);
@@ -127,6 +150,7 @@
 			isa = PBXGroup;
 			children = (
 				1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */,
+				F660E11A13AD4CCE00B5A873 /* Cocoa.framework */,
 				1058C7A2FEA54F0111CA2CBB /* Other Frameworks */,
 			);
 			name = Frameworks;
@@ -143,6 +167,26 @@
 				CC859C5311759B5E0006783F /* changes.txt */,
 			);
 			path = AsyncSocket;
+			sourceTree = "<group>";
+		};
+		F660E11C13AD4CCE00B5A873 /* WebSocketTests */ = {
+			isa = PBXGroup;
+			children = (
+				F660E12313AD4CCE00B5A873 /* WebSocketTests.h */,
+				F660E12513AD4CCE00B5A873 /* WebSocketTests.m */,
+				F660E11D13AD4CCE00B5A873 /* Supporting Files */,
+			);
+			path = WebSocketTests;
+			sourceTree = "<group>";
+		};
+		F660E11D13AD4CCE00B5A873 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				F660E11E13AD4CCE00B5A873 /* WebSocketTests-Info.plist */,
+				F660E11F13AD4CCE00B5A873 /* InfoPlist.strings */,
+				F660E12213AD4CCE00B5A873 /* WebSocketTests-Prefix.pch */,
+			);
+			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -166,6 +210,24 @@
 			productReference = 8D1107320486CEB800E47090 /* WebSocket.app */;
 			productType = "com.apple.product-type.application";
 		};
+		F660E11813AD4CCE00B5A873 /* WebSocketTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F660E12913AD4CCE00B5A873 /* Build configuration list for PBXNativeTarget "WebSocketTests" */;
+			buildPhases = (
+				F660E11413AD4CCE00B5A873 /* Sources */,
+				F660E11513AD4CCE00B5A873 /* Frameworks */,
+				F660E11613AD4CCE00B5A873 /* Resources */,
+				F660E11713AD4CCE00B5A873 /* ShellScript */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = WebSocketTests;
+			productName = WebSocketTests;
+			productReference = F660E11913AD4CCE00B5A873 /* WebSocketTests.octest */;
+			productType = "com.apple.product-type.bundle";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -173,12 +235,17 @@
 			isa = PBXProject;
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "WebSocket" */;
 			compatibilityVersion = "Xcode 3.1";
+			developmentRegion = English;
 			hasScannedForEncodings = 1;
+			knownRegions = (
+				en,
+			);
 			mainGroup = 29B97314FDCFA39411CA2CEA /* WebSocket */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
 				8D1107260486CEB800E47090 /* WebSocket */,
+				F660E11813AD4CCE00B5A873 /* WebSocketTests */,
 			);
 		};
 /* End PBXProject section */
@@ -195,7 +262,32 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		F660E11613AD4CCE00B5A873 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F660E12113AD4CCE00B5A873 /* InfoPlist.strings in Resources */,
+				F660E12413AD4CCE00B5A873 /* WebSocketTests.h in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		F660E11713AD4CCE00B5A873 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Run the unit tests in this test bundle.\n\"${SYSTEM_DEVELOPER_DIR}/Tools/RunUnitTests\"\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		8D11072C0486CEB800E47090 /* Sources */ = {
@@ -207,6 +299,16 @@
 				CC859C4B11759B3B0006783F /* WebSocket.m in Sources */,
 				CC859C5511759B5E0006783F /* AsyncSocket.m in Sources */,
 				CC859C5611759B5E0006783F /* AsyncUdpSocket.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F660E11413AD4CCE00B5A873 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F660E13013AD53A000B5A873 /* AsyncSocket.m in Sources */,
+				F660E12E13AD4ECD00B5A873 /* WebSocket.m in Sources */,
+				F660E12613AD4CCE00B5A873 /* WebSocketTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -227,6 +329,14 @@
 				1DDD58150DA1D0A300B32029 /* English */,
 			);
 			name = MainMenu.xib;
+			sourceTree = "<group>";
+		};
+		F660E11F13AD4CCE00B5A873 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				F660E12013AD4CCE00B5A873 /* en */,
+			);
+			name = InfoPlist.strings;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -289,6 +399,56 @@
 			};
 			name = Release;
 		};
+		F660E12713AD4CCE00B5A873 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				FRAMEWORK_SEARCH_PATHS = "$(DEVELOPER_LIBRARY_DIR)/Frameworks";
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "WebSocketTests/WebSocketTests-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = DEBUG;
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				INFOPLIST_FILE = "WebSocketTests/WebSocketTests-Info.plist";
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				OTHER_LDFLAGS = (
+					"-framework",
+					SenTestingKit,
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				WRAPPER_EXTENSION = octest;
+			};
+			name = Debug;
+		};
+		F660E12813AD4CCE00B5A873 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				FRAMEWORK_SEARCH_PATHS = "$(DEVELOPER_LIBRARY_DIR)/Frameworks";
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "WebSocketTests/WebSocketTests-Prefix.pch";
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				INFOPLIST_FILE = "WebSocketTests/WebSocketTests-Info.plist";
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				OTHER_LDFLAGS = (
+					"-framework",
+					SenTestingKit,
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				WRAPPER_EXTENSION = octest;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -309,6 +469,14 @@
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
+		};
+		F660E12913AD4CCE00B5A873 /* Build configuration list for PBXNativeTarget "WebSocketTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F660E12713AD4CCE00B5A873 /* Debug */,
+				F660E12813AD4CCE00B5A873 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
 		};
 /* End XCConfigurationList section */
 	};
