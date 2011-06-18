@@ -10,18 +10,27 @@
 
 @implementation WebSocketTests
 
+- (void)setUp
+{
+    webSocket = [WebSocket webSocketWithURLString:@"ws://localhost:8888/" delegate:self];
+}
+
+- (void)tearDown
+{
+    webSocket = nil;
+}
+
 - (void)testWebSocket
 {
-    WebSocket *ws = [WebSocket webSocketWithURLString:@"ws://localhost:8888/" delegate:self];
-
-    STAssertNotNil(ws, @"Something prevents our Web Socket instance from being created");
-    STAssertFalse(ws.connected, @"Web Socket already connected");
+    STAssertNotNil(webSocket, @"Something prevents our Web Socket instance from being created.");
+    STAssertTrue([webSocket isKindOfClass:[WebSocket class]], @"Cannot find the Web Socket instance.");
+    STAssertFalse(webSocket.connected, @"Web Socket already connected.");
 }
 
 - (void)testWebSocketWrongProtocol
 {
     STAssertThrows([WebSocket webSocketWithURLString:@"http://localhost:8888/" delegate:self],
-                   @"Should throw an exception");
+                   @"Should throw an exception.");
 }
 
 # pragma mark - WebSocketDelegate Methods

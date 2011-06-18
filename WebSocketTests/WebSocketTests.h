@@ -11,7 +11,7 @@
 
 @interface WebSocketTests : SenTestCase <WebSocketDelegate> {
 @private
-    
+    WebSocket *webSocket;
 }
 
 @end
