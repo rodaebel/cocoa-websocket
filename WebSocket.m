@@ -40,14 +40,14 @@ typedef struct SecKey {
                            "Origin: %@\r\n\r\n"
 
 
-@interface NSData (md5)
+@interface NSData (WebSocketDataAdditions)
 
 - (NSData *) MD5;
 
 @end
 
 
-@implementation NSData (md5)
+@implementation NSData (WebSocketDataAdditions)
 
 - (NSData *) MD5
 {
