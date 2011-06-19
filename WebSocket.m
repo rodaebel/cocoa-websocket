@@ -120,7 +120,7 @@ typedef struct SecKey {
     }
 }
 
--(void)_dispatchSecured {
+- (void)_dispatchSecured {
     if (delegate && [delegate respondsToSelector:@selector(webSocketDidSecure:)]) {
       [delegate webSocketDidSecure:self];
     }
@@ -128,7 +128,7 @@ typedef struct SecKey {
 
 #pragma mark Private
 
--(void)_readNextMessage {
+- (void)_readNextMessage {
     [socket readDataToData:[NSData dataWithBytes:"\xFF" length:1] withTimeout:-1 tag:WebSocketTagMessage];
 }
 
@@ -192,12 +192,12 @@ typedef struct SecKey {
         if (secure) {
           NSDictionary *settings = nil;
           if (WEBSOCKET_DEV_MODE) {
-            settings = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:YES], 
+            settings = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:YES],
                         (NSString *)kCFStreamSSLAllowsAnyRoot, nil];
           }
           [socket startTLS:settings];
         }
-      
+
         [socket connectToHost:url.host onPort:[url.port intValue] withTimeout:5 error:nil];
         if (runLoopModes) [socket setRunLoopModes:runLoopModes];
     }
@@ -217,21 +217,21 @@ typedef struct SecKey {
   if (secure && WEBSOCKET_DEV_MODE) {
     // Connecting to a secure server
     NSMutableDictionary * settings = [NSMutableDictionary dictionaryWithCapacity:2];
-    
+
     // Use the highest possible security
     [settings setObject:(NSString *)kCFStreamSocketSecurityLevelNegotiatedSSL
                  forKey:(NSString *)kCFStreamSSLLevel];
-    
+
     // Allow self-signed certificates
     [settings setObject:[NSNumber numberWithBool:YES]
                  forKey:(NSString *)kCFStreamSSLAllowsAnyRoot];
-    
+
     CFReadStreamSetProperty([sock getCFReadStream],
                             kCFStreamPropertySSLSettings, (CFDictionaryRef)settings);
     CFWriteStreamSetProperty([sock getCFWriteStream],
                              kCFStreamPropertySSLSettings, (CFDictionaryRef)settings);
   }
-  
+
   return YES;
 }
 
@@ -284,8 +284,8 @@ typedef struct SecKey {
                                                    key1,
                                                    key2,
                                                    url.host,
-                                                   ((secure && [url.port intValue] != 443) || 
-                                                    (!secure && [url.port intValue] != 80)) ? 
+                                                   ((secure && [url.port intValue] != 443) ||
+                                                    (!secure && [url.port intValue] != 80)) ?
                                                     [NSString stringWithFormat:@":%d", [url.port intValue]] : @"",
                                                    requestOrigin];
 
